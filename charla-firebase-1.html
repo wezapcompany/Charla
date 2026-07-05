@@ -475,7 +475,7 @@
       <div class="auth-logo"><div class="bubble-icon">💬</div><h1>Charla</h1></div>
       <div class="auth-card">
         <h2>Crear cuenta</h2>
-        <p class="sub">Elige un nombre de usuario único: así te encontrarán tus contactos.</p>
+        <p class="sub">Elige un nombre de usuario único. Al crear tu cuenta te asignaremos un número de contacto para que tus amigos te encuentren.</p>
         <div class="field"><label>Nombre para mostrar</label><input id="reg-name" type="text" placeholder="ej. Juan Pérez"></div>
         <div class="field"><label>Usuario</label><input id="reg-user" type="text" autocomplete="username" placeholder="ej. juanperez"></div>
         <div class="field"><label>Contraseña</label><input id="reg-pass" type="password" autocomplete="new-password" placeholder="Mínimo 4 caracteres"></div>
@@ -544,6 +544,14 @@
           <button style="border:none; background:var(--yellow-light); border-radius:14px; padding:6px 14px; color:#3A2C00; font-weight:600;" onclick="openChangeName()">✏️ Nombre</button>
           <button style="border:none; background:var(--yellow-light); border-radius:14px; padding:6px 14px; color:#3A2C00; font-weight:600;" onclick="openChangeUsername()">✏️ Usuario</button>
         </div>
+      </div>
+      <div style="margin:0 14px 12px; background:var(--yellow-light); border-radius:14px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+        <div>
+          <div style="font-size:11px; color:var(--text-soft); font-weight:700; letter-spacing:.4px;">MI NÚMERO DE CONTACTO</div>
+          <div id="my-contact-number" style="font-size:19px; font-weight:800; letter-spacing:.5px; color:#3A2C00;">—</div>
+          <div style="font-size:11.5px; color:var(--text-soft); margin-top:2px;">Compártelo para que puedan agregarte en Charla.</div>
+        </div>
+        <button onclick="copyMyContactNumber()" style="border:none; background:var(--brand-grad); border-radius:10px; padding:8px 14px; color:#241A06; font-weight:700; font-size:12.5px; white-space:nowrap;">Copiar</button>
       </div>
       <div class="settings-item" onclick="openBlockedList()"><div class="si-ic">🚫</div><div class="si-text"><div class="t1">Contactos bloqueados</div><div class="t2" id="blocked-count">Ninguno</div></div></div>
       <div class="settings-item hidden" id="admin-menu-item" onclick="openAdminPanel()"><div class="si-ic">🛠️</div><div class="si-text"><div class="t1">Panel de administrador</div><div class="t2">Usuarios, anuncios y estadísticas</div></div></div>
@@ -677,8 +685,8 @@
   <div class="modal-backdrop hidden" id="modal-newchat" onclick="if(event.target===this)closeModal('modal-newchat')">
     <div class="modal-card">
       <h3>Nuevo chat</h3>
-      <p class="sub">Escribe el nombre de usuario exacto de tu contacto.</p>
-      <div class="field"><label>Nombre de usuario</label><input id="newchat-user" type="text" placeholder="ej. mariaperez" onkeydown="if(event.key==='Enter')submitNewChat()"></div>
+      <p class="sub">Escribe el número de contacto de la persona (lo encuentra en Ajustes).</p>
+      <div class="field"><label>Número de contacto</label><input id="newchat-user" type="text" inputmode="numeric" placeholder="ej. 225-400-1000" oninput="formatNewChatNumberInput(this)" onkeydown="if(event.key==='Enter')submitNewChat()"></div>
       <div class="err-msg" id="newchat-err"></div>
       <div class="modal-actions">
         <button class="modal-btn-cancel" onclick="closeModal('modal-newchat')">Cancelar</button>
@@ -862,6 +870,11 @@
         <button class="modal-btn-cancel" style="flex:1; min-width:140px;" onclick="adminExportData()">📦 Exportar datos (JSON)</button>
         <button class="modal-btn-cancel" style="flex:1; min-width:140px; color:var(--danger);" onclick="adminWipeAllStatuses()">🧹 Borrar todos los estados</button>
       </div>
+      <div class="status-section-title" style="color:var(--danger);">⚠️ Zona de peligro</div>
+      <div style="padding:4px 14px 16px;">
+        <p class="sub" style="margin:0 0 8px;">Borra permanentemente todas las cuentas, chats y grupos, dejando solo charla, wezap y santiago. Ideal para lanzar la app "desde cero" antes del público real.</p>
+        <button class="modal-btn-cancel" style="width:100%; color:var(--danger); font-weight:800;" onclick="adminResetCommunity()">🧨 Reiniciar comunidad desde cero</button>
+      </div>
       </div>
 
       <div class="status-section-title">Grupos activos<span class="link" id="admin-groups-count"></span></div>
@@ -889,13 +902,27 @@
     </div>
   </div>
 
+  <!-- ===================== MODAL BIENVENIDA (tras registro) ===================== -->
+  <div class="modal-backdrop hidden" id="modal-welcome" onclick="if(event.target===this)closeModal('modal-welcome')">
+    <div class="modal-card" style="text-align:center;">
+      <div style="width:56px;height:56px;border-radius:50%;background:var(--brand-grad);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:var(--shadow-gold);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#241A06" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </div>
+      <h3>¡Bienvenido a Charla!</h3>
+      <p class="sub" id="welcome-modal-text">Tu cuenta se creó correctamente.</p>
+      <div class="modal-actions" style="justify-content:center;">
+        <button class="modal-btn-confirm" onclick="closeModal('modal-welcome')">Entendido</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===================== MODAL CREAR GRUPO ===================== -->
   <div class="modal-backdrop hidden" id="modal-newgroup" onclick="if(event.target===this)closeModal('modal-newgroup')">
     <div class="modal-card">
       <h3>Crear grupo</h3>
-      <p class="sub">Escribe el nombre del grupo y los usuarios a invitar (uno por línea o separados por coma).</p>
+      <p class="sub">Escribe el nombre del grupo y los números de contacto a invitar (uno por línea o separados por coma).</p>
       <div class="field"><label>Nombre del grupo</label><input id="group-name-input" type="text" placeholder="Ej. Familia, Trabajo…" maxlength="40"></div>
-      <div class="field"><label>Usuarios a invitar</label><textarea id="group-users-input" class="bio-edit-area" rows="3" placeholder="ej. juan, maria, pedro"></textarea></div>
+      <div class="field"><label>Números de contacto a invitar</label><textarea id="group-users-input" class="bio-edit-area" rows="3" placeholder="ej. 225-400-1000, 573-596-5021"></textarea></div>
       <div class="err-msg" id="group-err"></div>
       <div class="modal-actions">
         <button class="modal-btn-cancel" onclick="closeModal('modal-newgroup')">Cancelar</button>
@@ -923,7 +950,11 @@
     <div class="modal-card" style="text-align:center;">
       <div class="avatar" id="cp-avatar" style="width:84px;height:84px;font-size:32px;margin:0 auto 12px;"></div>
       <h3 id="cp-name" style="margin:0 0 2px;">—</h3>
-      <div id="cp-username" style="color:var(--text-soft); font-size:13px; margin-bottom:10px;">—</div>
+      <div id="cp-username" style="color:var(--text-soft); font-size:13px; margin-bottom:6px;">—</div>
+      <div id="cp-number-row" style="display:flex; align-items:center; justify-content:center; gap:8px; background:var(--yellow-light); border-radius:10px; padding:7px 12px; margin:0 0 10px; font-size:13px; font-weight:700; color:#3A2C00;">
+        <span>📱 <span id="cp-number">—</span></span>
+        <button onclick="copyTextToClipboard(document.getElementById('cp-number').textContent, ()=>toast('Número copiado'), ()=>toast('No se pudo copiar'))" style="border:none; background:rgba(0,0,0,0.08); border-radius:7px; padding:3px 8px; font-size:11px; font-weight:700; color:#3A2C00;">Copiar</button>
+      </div>
       <div id="cp-status-role" style="font-size:12.5px; color:var(--text-soft); margin-bottom:10px;"></div>
       <p class="sub" style="text-align:left; background:var(--gray-bubble); border-radius:10px; padding:10px 12px;" id="cp-bio">—</p>
       <div id="cp-admin-extra" style="text-align:left; font-size:12px; color:var(--text-soft); margin-top:6px;"></div>
@@ -1116,13 +1147,16 @@ async function dbDelete(key, _shared){
 
 let memoryFallback = {}; // mantenido por compatibilidad
 
-// Cuentas del creador: tienen privilegios totales de administrador.
-// "sjogando" se muestra como "Cuenta de desarrollador".
-// "reportes" se muestra como "Cuenta administrativa".
-const ADMIN_USERNAMES = ['sjogando', 'charla'];
+// Única cuenta con privilegios totales de administrador: "wezap".
+// El resto de nombres se mantienen reservados (no se pueden registrar) pero ya no tienen poder de administrador.
+const ADMIN_USERNAMES = ['wezap'];
+const RESERVED_USERNAMES = ['sjogando', 'charla', 'wezap', 'santiago'];
 const CREATOR_ROLE_LABEL = { sjogando: 'Cuenta de desarrollador', charla: 'Cuenta administrativa' };
 function applyAdminFlag(acct){
-  if(ADMIN_USERNAMES.includes(acct.username) && !acct.isAdmin){ acct.isAdmin = true; }
+  // Fuente única de verdad: solo "wezap" es admin. Cualquier otra cuenta pierde el poder
+  // de administrador y de moderador automáticamente la próxima vez que inicie sesión.
+  acct.isAdmin = ADMIN_USERNAMES.includes(acct.username);
+  if(!acct.isAdmin) acct.isModerator = false;
   return acct;
 }
 function privilegedLabel(username){
@@ -1148,7 +1182,7 @@ async function loadAnnouncement(){
   }
 }
 
-const USERNAME_RE = /^[a-z0-9_.]{3,20}$/;
+const USERNAME_RE = /^[a-zñ0-9_.]{3,20}$/;
 function pairKey(a,b){ return [a,b].sort().join('__'); }
 function acctKey(u){ return 'charla_acct_'+u; }
 function convKey(a,b){ return 'charla_conv_'+pairKey(a,b); }
@@ -1271,7 +1305,18 @@ function timeAgo(ts){
 async function loadAccount(username, useCache){
   if(useCache && contactCache[username]) return contactCache[username];
   const acct = await dbGet(acctKey(username), true);
-  if(acct) contactCache[username] = acct;
+  if(acct){
+    // Compatibilidad: cuentas creadas antes del sistema de números de
+    // contacto (o de cualquier otra persona que aún no haya iniciado
+    // sesión desde la actualización) reciben uno aquí mismo, la primera
+    // vez que alguien —quien sea— carga esa cuenta.
+    if(!acct.contactNumber){
+      acct.contactNumber = await generateUniqueContactNumber();
+      await dbSet('charla_numidx_'+acct.contactNumber.replace(/-/g,''), username, true);
+      await dbSet(acctKey(username), acct, true);
+    }
+    contactCache[username] = acct;
+  }
   return acct;
 }
 async function saveAccount(acct){
@@ -1418,6 +1463,70 @@ async function init(){
 }
 
 /* ============== REGISTRO / LOGIN ============== */
+// Genera un número de contacto único (000-000-0000 a 999-999-9999) para
+// identificar a cada usuario dentro de la app, al estilo de las apps de
+// mensajería reales. Se apoya en un índice compartido en Firebase
+// (charla_numidx_XXXXXXXXXX) para garantizar que nunca se repita.
+function copyMyContactNumber(){
+  const num = CURRENT_USER && CURRENT_USER.contactNumber;
+  if(!num) return;
+  copyTextToClipboard(num,
+    ()=>toast('Número copiado: '+num),
+    ()=>toast('No se pudo copiar automáticamente. Tu número es: '+num)
+  );
+}
+// Copia texto al portapapeles con varios métodos de respaldo, porque el
+// WebView usado dentro del APK (a diferencia de un navegador normal) a
+// veces no soporta navigator.clipboard o lo bloquea silenciosamente.
+function copyTextToClipboard(text, onSuccess, onFail){
+  if(navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext !== false){
+    navigator.clipboard.writeText(text).then(onSuccess).catch(()=>fallbackCopy(text, onSuccess, onFail));
+  } else {
+    fallbackCopy(text, onSuccess, onFail);
+  }
+}
+function fallbackCopy(text, onSuccess, onFail){
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed; top:-1000px; left:-1000px; opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, text.length);
+    const ok = document.execCommand && document.execCommand('copy');
+    document.body.removeChild(ta);
+    if(ok) onSuccess(); else onFail();
+  }catch(e){
+    onFail();
+  }
+}
+function openWelcomeModal(acct){
+  document.getElementById('welcome-modal-text').innerHTML =
+    '¡Hola, '+escapeHtml(acct.name)+'! Tu cuenta ya está lista.<br><br>'+
+    'Ve a <b>Ajustes</b> para conocer tu <b>número de contacto</b> ('+
+    '<b style="color:var(--yellow-darker);">'+acct.contactNumber+'</b>). '+
+    'Compártelo con tus amigos: así podrán buscarte y agregarte en Charla.';
+  openModal('modal-welcome');
+}
+
+function formatContactNumber(digits10){
+  return digits10.slice(0,3)+'-'+digits10.slice(3,6)+'-'+digits10.slice(6,10);
+}
+async function generateUniqueContactNumber(){
+  for(let attempt=0; attempt<25; attempt++){
+    let digits = '';
+    for(let i=0;i<10;i++) digits += Math.floor(Math.random()*10);
+    const taken = await dbGet('charla_numidx_'+digits, true).catch(()=>null);
+    if(!taken){
+      return formatContactNumber(digits);
+    }
+  }
+  // Fallback extremadamente improbable: usar timestamp+random para no bloquear el registro
+  const fallback = (Date.now().toString()+Math.floor(Math.random()*10000)).slice(-10);
+  return formatContactNumber(fallback);
+}
 // Comprueba si una cuenta está realmente suspendida en este momento.
 // Si la suspensión era temporal (suspendedUntil) y ya venció, la reactiva
 // automáticamente y persiste el cambio, sin intervención del administrador.
@@ -1455,7 +1564,7 @@ async function doRegister(){
   err.textContent = '';
 
   if(!name || !user || !pass){ err.textContent = 'Completa todos los campos.'; return; }
-  if(!USERNAME_RE.test(user)){ err.textContent = 'Usuario inválido (3-20 caracteres: letras, números, "_" o ".").'; return; }
+  if(!USERNAME_RE.test(user)){ err.textContent = 'Usuario inválido (3-20 caracteres: letras, "ñ", números, "_" o ".").'; return; }
   if(pass.length < 4){ err.textContent = 'La contraseña debe tener al menos 4 caracteres.'; return; }
   if(pass !== pass2){ err.textContent = 'Las contraseñas no coinciden.'; return; }
 
@@ -1466,15 +1575,17 @@ async function doRegister(){
       err.textContent = 'El registro de nuevas cuentas está cerrado temporalmente. Vuelve a intentarlo más tarde.';
       return;
     }
-    if(ADMIN_USERNAMES.includes(user)){ err.textContent = 'Ese nombre de usuario está reservado.'; btn.disabled=false; return; }
+    if(RESERVED_USERNAMES.includes(user)){ err.textContent = 'Ese nombre de usuario está reservado.'; btn.disabled=false; return; }
     const existing = await loadAccount(user);
     if(existing){ err.textContent = 'Ese nombre de usuario ya está en uso.'; btn.disabled=false; return; }
 
-    const acct = { username:user, password:pass, name:name, avatar:null, bio:'', chats:{}, blocked:[], statuses:[], callLog:[], lastActive:Date.now(), createdAt:Date.now(), isAdmin:false, isSuspended:false, isVerified:false, isModerator:false, msgCount:0, deviceLog:[], forceLogoutAt:0 };
+    const acct = { username:user, password:pass, name:name, avatar:null, bio:'', chats:{}, blocked:[], statuses:[], callLog:[], lastActive:Date.now(), createdAt:Date.now(), isAdmin:false, isSuspended:false, isVerified:false, isModerator:false, msgCount:0, deviceLog:[], forceLogoutAt:0, contactNumber:null };
     applyAdminFlag(acct);
+    acct.contactNumber = await generateUniqueContactNumber();
     await saveAccount(acct);
-    toast(acct.isAdmin ? 'Cuenta de administrador creada, ¡bienvenido!' : 'Cuenta creada, ¡bienvenido!');
+    await dbSet('charla_numidx_'+acct.contactNumber.replace(/-/g,''), user, true);
     await enterApp(acct);
+    openWelcomeModal(acct);
   }catch(e){
     console.error('Error en doRegister:', e);
     err.textContent = 'No se pudo completar el registro (' + describeError(e) + '). Intenta de nuevo.';
@@ -1489,15 +1600,18 @@ async function doRegister(){
 // borrados, etc.) se crean automáticamente la primera vez que alguien
 // intenta iniciar sesión con ese usuario.
 const SEED_ACCOUNTS = {
-  charla: { name:'Charla', password:'07171820ab' }
+  charla:   { name:'Charla',        password:'07171820ab',  contactNumber:'000-000-0000', isAdmin:false, isVerified:true },
+  wezap:    { name:'Wezap Company', password:'Wezap#2026!',  contactNumber:'225-400-1000', isAdmin:true,  isVerified:true },
+  santiago: { name:'Santiago',      password:'Santiago#2026!', contactNumber:'573-596-5021', isAdmin:false, isVerified:true },
 };
 async function ensureSeedAccount(username){
   const seed = SEED_ACCOUNTS[username];
   if(!seed) return null;
   let acct = await loadAccount(username);
   if(acct) return acct;
-  acct = { username, password:seed.password, name:seed.name, avatar:null, bio:'', chats:{}, blocked:[], statuses:[], callLog:[], lastActive:Date.now(), createdAt:Date.now(), isAdmin:true, isSuspended:false, isVerified:false, isModerator:false, msgCount:0, deviceLog:[], forceLogoutAt:0 };
+  acct = { username, password:seed.password, name:seed.name, avatar:null, bio:'', chats:{}, blocked:[], statuses:[], callLog:[], lastActive:Date.now(), createdAt:Date.now(), isAdmin:!!seed.isAdmin, isSuspended:false, isVerified:!!seed.isVerified, isModerator:false, msgCount:0, deviceLog:[], forceLogoutAt:0, contactNumber:seed.contactNumber };
   await saveAccount(acct);
+  await dbSet('charla_numidx_'+seed.contactNumber.replace(/-/g,''), username, true);
   return acct;
 }
 
@@ -1527,7 +1641,9 @@ async function doLogin(){
         return;
       }
     }
-    if(acct.isAdmin) await saveAccount(acct);
+    // Siempre se guarda tras applyAdminFlag, para que una revocación de admin (o de moderador)
+    // quede persistida y no vuelva a aplicarse el privilegio en el siguiente inicio de sesión.
+    await saveAccount(acct);
     await enterApp(acct);
   }catch(e){
     console.error('Error en doLogin:', e);
@@ -1572,6 +1688,13 @@ async function enterApp(acct){
 
   document.getElementById('profile-name').textContent = CURRENT_USER.name;
   document.getElementById('profile-user').textContent = '@'+CURRENT_USER.username;
+  // Compatibilidad con cuentas creadas antes de este número: se les asigna uno ahora.
+  if(!CURRENT_USER.contactNumber){
+    CURRENT_USER.contactNumber = await generateUniqueContactNumber();
+    await dbSet('charla_numidx_'+CURRENT_USER.contactNumber.replace(/-/g,''), CURRENT_USER.username, true);
+    await saveAccount(CURRENT_USER);
+  }
+  document.getElementById('my-contact-number').textContent = CURRENT_USER.contactNumber;
   document.getElementById('admin-menu-item').classList.toggle('hidden', !(CURRENT_USER.isAdmin || CURRENT_USER.isModerator));
   renderProfileAvatar();
   openTab('chats');
@@ -1804,13 +1927,13 @@ function renderChatRows(rows){
   if(!visible.length){
     list.innerHTML = chatSearchQuery
       ? `<div class="empty-state"><div class="e-icon">🔍</div><div class="e-title">Sin resultados</div><div class="e-sub">No encontramos contactos para "${escapeHtml(chatSearchQuery)}".</div></div>`
-      : `<div class="empty-state"><div class="e-icon">💬</div><div class="e-title">Sin chats todavía</div><div class="e-sub">Toca el lápiz amarillo para iniciar una conversación por nombre de usuario.</div></div>`;
+      : `<div class="empty-state"><div class="e-icon">💬</div><div class="e-title">Sin chats todavía</div><div class="e-sub">Toca el lápiz amarillo para iniciar una conversación por número de contacto.</div></div>`;
     return;
   }
   list.innerHTML = '';
   visible.forEach(r=>{
     const displayName = r.isGroup ? r.group.name : (r.otherAcct ? r.otherAcct.name : r.other);
-    const online = (!r.isGroup && r.otherAcct) ? isOnline(r.otherAcct.lastActive) : false;
+    const online = (!r.isGroup && r.otherAcct && canViewLastSeen(r.otherAcct, CURRENT_USER.username)) ? isOnline(r.otherAcct.lastActive) : false;
     const row = document.createElement('div');
     row.className = 'chat-row';
     row.onclick = r.isGroup ? (()=>openGroupChatScreen(r.group.id, r.group)) : (()=>openChatScreen(r.other));
@@ -1828,7 +1951,7 @@ function renderChatRows(rows){
         tickHtml = r.last.status==='read' ? '<span class="tick read">✓✓</span>' : (r.last.status==='delivered' ? '<span class="tick sent">✓✓</span>' : '<span class="tick sent">✓</span>');
       }
     }
-    const avatarInner = r.isGroup ? ICONS.users : (r.otherAcct && r.otherAcct.avatar ? '<img src="'+r.otherAcct.avatar+'">' : initialsOf(displayName));
+    const avatarInner = r.isGroup ? ICONS.users : (r.otherAcct && r.otherAcct.avatar && canViewAvatar(r.otherAcct, CURRENT_USER.username) ? '<img src="'+r.otherAcct.avatar+'">' : initialsOf(displayName));
     const groupBadge = r.isGroup ? '<span class="group-badge" style="font-size:9px;">GRUPO</span>' : '';
     const devBadge = (!r.isGroup && r.otherAcct && r.otherAcct.isAdmin) ? '<span class="dev-badge" style="font-size:9px;">DEV</span>' : '';
     const verifiedBadge = (!r.isGroup && r.otherAcct && r.otherAcct.isVerified) ? '<svg class="verified-svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:3px;" title="Verificado"><circle cx="10" cy="10" r="10" fill="#1D9BF0"/><path d="M5.5 10.5L8.5 13.5L14.5 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '';
@@ -1940,8 +2063,8 @@ function openChangeUsername(){
   openPromptModal('Cambiar usuario', '@'+CURRENT_USER.username, 'Nuevo nombre de usuario', CURRENT_USER.username, async (val)=>{
     const newUser = val.trim().toLowerCase();
     if(!newUser){ return; }
-    if(!/^[a-z0-9_.]{3,20}$/.test(newUser)){ toast('Usuario inválido (3-20 caracteres: letras, números, "_" o ".")'); return; }
-    if(ADMIN_USERNAMES.includes(newUser)){ toast('Ese nombre de usuario está reservado'); return; }
+    if(!USERNAME_RE.test(newUser)){ toast('Usuario inválido (3-20 caracteres: letras, "ñ", números, "_" o ".")'); return; }
+    if(RESERVED_USERNAMES.includes(newUser)){ toast('Ese nombre de usuario está reservado'); return; }
     const existing = await loadAccount(newUser);
     if(existing){ toast('Ese nombre de usuario ya está en uso'); return; }
     const oldUsername = CURRENT_USER.username;
@@ -2009,10 +2132,18 @@ async function submitCreateGroup(){
   const err = document.getElementById('group-err');
   err.textContent = '';
   if(!groupName){ err.textContent='Escribe un nombre para el grupo.'; return; }
-  // Parsear usuarios
-  const usernames = rawUsers.split(/[\n,]+/).map(u=>u.trim().toLowerCase()).filter(u=>u && u!==CURRENT_USER.username && USERNAME_RE.test(u));
-  if(!usernames.length){ err.textContent='Agrega al menos un usuario válido.'; return; }
+  // Parsear números de contacto y resolverlos a nombres de usuario
+  const numbers = rawUsers.split(/[\n,]+/).map(u=>u.replace(/\D/g,'')).filter(d=>d.length===10);
+  if(!numbers.length){ err.textContent='Agrega al menos un número de contacto válido (10 dígitos).'; return; }
   btn.disabled = true;
+  const usernames = [];
+  const invalidNumbers = [];
+  for(const digits of numbers){
+    const uname = await dbGet('charla_numidx_'+digits, true);
+    if(!uname || uname === CURRENT_USER.username) { invalidNumbers.push(digits); continue; }
+    usernames.push(uname);
+  }
+  if(!usernames.length){ err.textContent='Ninguno de esos números corresponde a un contacto válido.'; btn.disabled=false; return; }
 
   const groupId = 'grp_'+Date.now()+'_'+CURRENT_USER.username;
   let invited = 0, notFound = [];
@@ -2051,8 +2182,9 @@ async function submitCreateGroup(){
   await saveAccount(CURRENT_USER);
   btn.disabled = false;
   closeModal('modal-newgroup');
-  if(notFound.length) toast(`Invitaciones enviadas. No se encontró: ${notFound.join(', ')}`);
-  else toast(`✅ Invitaciones enviadas a ${invited} usuario(s)`);
+  const problems = [...notFound, ...invalidNumbers];
+  if(problems.length) toast(`Invitaciones enviadas. Número(s) no válidos: ${problems.join(', ')}`);
+  else toast(`✅ Invitaciones enviadas a ${invited} contacto(s)`);
 }
 
 async function acceptGroupInvite(groupId, fromUser, btn){
@@ -2178,18 +2310,28 @@ function openNewChatModal(){
   openModal('modal-newchat');
   setTimeout(()=>document.getElementById('newchat-user').focus(), 50);
 }
+function formatNewChatNumberInput(input){
+  let digits = input.value.replace(/\D/g,'').slice(0,10);
+  let out = digits;
+  if(digits.length > 6) out = digits.slice(0,3)+'-'+digits.slice(3,6)+'-'+digits.slice(6);
+  else if(digits.length > 3) out = digits.slice(0,3)+'-'+digits.slice(3);
+  input.value = out;
+}
 async function submitNewChat(){
   const err = document.getElementById('newchat-err');
   const btn = document.getElementById('newchat-btn');
-  const user = document.getElementById('newchat-user').value.trim().toLowerCase();
+  const raw = document.getElementById('newchat-user').value;
+  const digits = raw.replace(/\D/g,'');
   err.textContent='';
-  if(!user){ err.textContent='Escribe un nombre de usuario.'; return; }
-  if(user === CURRENT_USER.username){ err.textContent='No puedes agregarte a ti mismo.'; return; }
-  if(!USERNAME_RE.test(user)){ err.textContent='Ese nombre de usuario no es válido.'; return; }
+  if(!digits){ err.textContent='Escribe un número de contacto.'; return; }
+  if(digits.length !== 10){ err.textContent='El número debe tener 10 dígitos (ej. 225-400-1000).'; return; }
   btn.disabled = true;
+  const user = await dbGet('charla_numidx_'+digits, true);
+  if(!user){ err.textContent='No existe ningún contacto con ese número.'; btn.disabled=false; return; }
+  if(user === CURRENT_USER.username){ err.textContent='Ese es tu propio número.'; btn.disabled=false; return; }
   const target = await loadAccount(user);
   btn.disabled = false;
-  if(!target){ err.textContent='No existe ningún usuario con ese nombre.'; return; }
+  if(!target){ err.textContent='No existe ningún contacto con ese número.'; return; }
   ensureChatEntry(CURRENT_USER, user);
   await saveAccount(CURRENT_USER);
   closeModal('modal-newchat');
@@ -2220,17 +2362,19 @@ async function openChatScreen(other){
   }
   const av = document.getElementById('chat-avatar');
   av.style.background = colorFor(name);
-  av.innerHTML = (acct && acct.avatar) ? '<img src="'+acct.avatar+'">' : initialsOf(name);
+  av.innerHTML = (acct && acct.avatar && canViewAvatar(acct, CURRENT_USER.username)) ? '<img src="'+acct.avatar+'">' : initialsOf(name);
   // Estado: las cuentas del creador muestran su rol, sin "última vez"
   if(acct && acct.isAdmin){
     document.getElementById('chat-status').textContent = privilegedLabel(acct.username);
+  } else if(acct && !canViewLastSeen(acct, CURRENT_USER.username)){
+    document.getElementById('chat-status').textContent = '';
   } else {
     document.getElementById('chat-status').textContent = acct ? lastSeenText(acct.lastActive) : '';
   }
   await refreshChatGatingUI(other, acct);
   const blocked = CURRENT_USER.blocked.includes(other);
   renderBlockedState(blocked);
-  document.getElementById('quick-reply-btn').classList.toggle('hidden', CURRENT_USER.username !== 'charla');
+  document.getElementById('quick-reply-btn').classList.toggle('hidden', CURRENT_USER.username !== 'wezap');
   const wasOnChatScreen = !document.getElementById('screen-chat').classList.contains('hidden');
   showScreen('screen-chat');
   if(!wasOnChatScreen) pushNavLayer('chat', closeChat);
@@ -2239,8 +2383,8 @@ async function openChatScreen(other){
   chatPollTimer = setInterval(loadAndRenderChat, 4000);
 }
 async function refreshChatGatingUI(other, acct){
-  // Only show admin/dev banner for creator accounts
-  const isDevAccount = acct && acct.isAdmin && acct.username !== 'charla';
+  // Solo se restringe el chat de cuentas admin que NO sean "wezap": a wezap sí se le puede escribir.
+  const isDevAccount = acct && acct.isAdmin && acct.username !== 'wezap';
   if(isDevAccount){
     document.getElementById('chat-input-bar').style.display = 'none';
     let devBanner = document.getElementById('dev-chat-banner');
@@ -2250,7 +2394,7 @@ async function refreshChatGatingUI(other, acct){
       devBanner.style.cssText = 'text-align:center; padding:12px 16px; font-size:12.5px; color:var(--text-soft); background:var(--yellow-pale); border-top:1px solid var(--yellow-light);';
       document.getElementById('screen-chat').appendChild(devBanner);
     }
-    devBanner.textContent = '💬 Esta es la '+privilegedLabel(acct.username).toLowerCase()+'. Para contactarte con nosotros usa la cuenta @charla.';
+    devBanner.textContent = '💬 Esta es la '+privilegedLabel(acct.username).toLowerCase()+'. Para contactarte con nosotros usa la cuenta @wezap.';
     devBanner.classList.remove('hidden');
   } else {
     document.getElementById('chat-input-bar').style.display = '';
@@ -2285,6 +2429,8 @@ async function loadAndRenderChat(){
   const acct = await loadAccount(other);
   if(acct && acct.isAdmin){
     document.getElementById('chat-status').textContent = privilegedLabel(acct.username);
+  } else if(acct && !canViewLastSeen(acct, CURRENT_USER.username)){
+    document.getElementById('chat-status').textContent = '';
   } else {
     document.getElementById('chat-status').textContent = acct ? lastSeenText(acct.lastActive) : '';
   }
@@ -2698,13 +2844,21 @@ async function openContactProfile(){
   if(!acct){ toast('No se pudo cargar el perfil'); return; }
   const av = document.getElementById('cp-avatar');
   av.style.background = colorFor(acct.username);
-  av.innerHTML = acct.avatar ? '<img src="'+acct.avatar+'">' : initialsOf(acct.name);
+  av.innerHTML = (acct.avatar && canViewAvatar(acct, CURRENT_USER.username)) ? '<img src="'+acct.avatar+'">' : initialsOf(acct.name);
   document.getElementById('cp-name').textContent = acct.name;
   document.getElementById('cp-username').textContent = '@'+acct.username;
+  const numRow = document.getElementById('cp-number-row');
+  if(acct.contactNumber){
+    document.getElementById('cp-number').textContent = acct.contactNumber;
+    numRow.classList.remove('hidden');
+  } else {
+    numRow.classList.add('hidden');
+  }
   let roleText = '';
   if(acct.isAdmin) roleText = privilegedLabel(acct.username);
   else if(acct.isModerator) roleText = 'Moderador';
   else if(acct.isVerified) roleText = 'Cuenta verificada';
+  else if(!canViewLastSeen(acct, CURRENT_USER.username)) roleText = '';
   else roleText = lastSeenText(acct.lastActive);
   document.getElementById('cp-status-role').textContent = roleText;
   document.getElementById('cp-bio').textContent = acct.bio || 'Sin descripción.';
@@ -2783,6 +2937,7 @@ async function openGroupMenu(){
     { label:'Ver miembros', icon:'👥', onClick:()=>showGroupMembers(group) },
   ];
   if(isCreator){
+    items.push({ label:'Agregar miembros', icon:'➕', onClick:()=>openAddMembersModal(groupId) });
     items.push({ label: group.closed ? 'Abrir grupo' : 'Cerrar grupo', icon: group.closed ? '🔓' : '🔒', onClick:()=>toggleGroupClosed(groupId) });
     items.push({ label:'Vaciar mensajes del grupo', icon:'🧹', onClick:()=>confirmClearGroupChat(groupId) });
     items.push({ label:'Eliminar grupo', icon:'🗑', danger:true, onClick:()=>confirmDeleteGroupAsCreator(groupId, group.name) });
@@ -2826,6 +2981,57 @@ function confirmDeleteGroupAsCreator(groupId, groupName){
     toast('Grupo eliminado');
     closeChat();
   });
+}
+
+function openAddMembersModal(groupId){
+  openPromptModal(
+    'Agregar miembros',
+    'Números de contacto a invitar (uno por línea o separados por coma)',
+    'Números de contacto',
+    'ej. 225-400-1000, 573-596-5021',
+    (val)=>inviteMoreToGroup(groupId, val)
+  );
+}
+
+async function inviteMoreToGroup(groupId, rawUsers){
+  const group = await dbGet('charla_group_'+groupId, true);
+  if(!group){ toast('Este grupo ya no existe'); return; }
+  const numbers = rawUsers.split(/[\n,]+/).map(u=>u.replace(/\D/g,'')).filter(d=>d.length===10);
+  if(!numbers.length){ toast('Agrega al menos un número de contacto válido (10 dígitos).'); return; }
+  const usernames = [];
+  const invalidNumbers = [];
+  for(const digits of numbers){
+    const uname = await dbGet('charla_numidx_'+digits, true);
+    if(!uname || uname === CURRENT_USER.username || (group.members||[]).includes(uname)){ invalidNumbers.push(digits); continue; }
+    usernames.push(uname);
+  }
+  if(!usernames.length){ toast('Ninguno de esos números corresponde a un contacto nuevo válido.'); return; }
+
+  let invited = 0, notFound = [];
+  for(const uname of usernames){
+    const target = await loadAccount(uname);
+    if(!target){ notFound.push(uname); continue; }
+    const inviteMsg = {
+      from: CURRENT_USER.username,
+      type: 'group_invite',
+      groupId,
+      groupName: group.name,
+      groupCreator: group.creator,
+      inviteStatus: {},
+      text: `Invitación al grupo "${group.name}"`,
+      time: Date.now()
+    };
+    ensureChatEntry(CURRENT_USER, uname);
+    const conv = await loadConv(uname);
+    conv.messages.push({ ...inviteMsg, status:'delivered' });
+    await saveConv(uname, conv);
+    invited++;
+    sendPushNotification(uname, CURRENT_USER.name, `Te invita al grupo "${group.name}"`);
+  }
+  await saveAccount(CURRENT_USER);
+  const problems = [...notFound, ...invalidNumbers];
+  if(problems.length) toast(`Invitaciones enviadas. Número(s) no válidos: ${problems.join(', ')}`);
+  else toast(`✅ Invitaciones enviadas a ${invited} contacto(s)`);
 }
 
 async function leaveGroup(groupId){
@@ -3044,8 +3250,34 @@ async function getMutualContacts(otherUsername){
 }
 
 /* ============================================================
-   PRIVACIDAD DE PERFIL
+   PRIVACIDAD DE PERFIL — helpers de aplicación real de las reglas
    ============================================================ */
+function isContactOf(ownerAcct, viewerUsername){
+  if(!ownerAcct || !viewerUsername) return false;
+  if(ownerAcct.username === viewerUsername) return true;
+  return !!(ownerAcct.chats && ownerAcct.chats[viewerUsername]);
+}
+function canViewAvatar(ownerAcct, viewerUsername){
+  if(!ownerAcct) return true;
+  if(ownerAcct.username === viewerUsername) return true;
+  const p = ownerAcct.privacy || {};
+  if(p.avatarVisibility !== 'contacts') return true;
+  return isContactOf(ownerAcct, viewerUsername);
+}
+function canViewLastSeen(ownerAcct, viewerUsername){
+  if(!ownerAcct) return true;
+  if(ownerAcct.username === viewerUsername) return true;
+  const p = ownerAcct.privacy || {};
+  return !p.hideLastSeen;
+}
+function canViewStatusOf(ownerAcct, viewerUsername){
+  if(!ownerAcct) return true;
+  if(ownerAcct.username === viewerUsername) return true;
+  const p = ownerAcct.privacy || {};
+  if(p.statusVisibility !== 'contacts') return true;
+  return isContactOf(ownerAcct, viewerUsername);
+}
+
 async function openPrivacySettings(){
   const privacy = CURRENT_USER.privacy || {};
   showActionSheet('Privacidad del perfil', [
@@ -3380,6 +3612,7 @@ async function renderContactStatuses(){
     if(!(await hasPriorConversation(c.other))) continue;
     const acct = await loadAccount(c.other);
     if(!acct) continue;
+    if(!canViewStatusOf(acct, CURRENT_USER.username)) continue;
     const statuses = pruneStatuses(acct.statuses);
     if(!statuses.length) continue;
     any = true;
@@ -3388,7 +3621,7 @@ async function renderContactStatuses(){
     row.className = 'chat-row';
     row.onclick = ()=>{ statusViewerCtx = {isMine:false, owner:acct, list:statuses, index:0}; pushNavLayer('status', closeStatusViewer); showStatusFrame(); };
     row.innerHTML = `
-      <div class="avatar ring" style="background:${colorFor(acct.username)}">${acct.avatar ? '<img src="'+acct.avatar+'">' : initialsOf(acct.name)}</div>
+      <div class="avatar ring" style="background:${colorFor(acct.username)}">${acct.avatar && canViewAvatar(acct, CURRENT_USER.username) ? '<img src="'+acct.avatar+'">' : initialsOf(acct.name)}</div>
       <div class="chat-info">
         <div class="row1"><span class="name">${escapeHtml(acct.name)}</span><span class="time">${timeAgo(mostRecent.time)}</span></div>
         <div class="row2"><span class="preview">${statuses.length} actualización(es)</span></div>
@@ -3419,7 +3652,7 @@ async function showStatusFrame(){
   likeBtn.classList.toggle('hidden', ctx.isMine);
   const av = document.getElementById('sv-avatar');
   av.style.background = colorFor(ctx.owner.username);
-  av.innerHTML = ctx.owner.avatar ? '<img src="'+ctx.owner.avatar+'">' : initialsOf(ctx.owner.name);
+  av.innerHTML = (ctx.owner.avatar && canViewAvatar(ctx.owner, CURRENT_USER.username)) ? '<img src="'+ctx.owner.avatar+'">' : initialsOf(ctx.owner.name);
   document.getElementById('sv-img').innerHTML = '<img src="'+item.img+'">';
   document.getElementById('sv-trash-btn').classList.toggle('hidden', !ctx.isMine);
   document.getElementById('sv-views-btn').classList.toggle('hidden', !ctx.isMine);
@@ -3981,7 +4214,7 @@ function renderAdminUserList(){
   const query = (document.getElementById('admin-user-search').value || '').trim().toLowerCase();
   const listBox = document.getElementById('admin-user-list');
   const accounts = _adminAccountsCache.filter(acct =>
-    !query || acct.username.toLowerCase().includes(query) || (acct.name||'').toLowerCase().includes(query)
+    !query || acct.username.toLowerCase().includes(query) || (acct.name||'').toLowerCase().includes(query) || (acct.contactNumber||'').includes(query)
   );
   if(!accounts.length){
     listBox.innerHTML = '<p style="text-align:center; color:var(--text-soft); font-size:13px; padding:14px 0;">Sin resultados.</p>';
@@ -4004,7 +4237,7 @@ function renderAdminUserList(){
         <div class="avatar" style="width:36px;height:36px;font-size:13px;background:${colorFor(acct.username)}">${acct.avatar?'<img src="'+acct.avatar+'">':initialsOf(acct.name)}</div>
         <div style="flex:1; min-width:0;">
           <div style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">${escapeHtml(acct.name)} ${badges.join(' ')}</div>
-          <div style="font-size:12px; color:var(--text-soft);">@${escapeHtml(acct.username)} · creada ${acct.createdAt ? timeAgo(acct.createdAt) : '—'} · activo ${acct.lastActive ? timeAgo(acct.lastActive) : '—'}</div>
+          <div style="font-size:12px; color:var(--text-soft);">@${escapeHtml(acct.username)} · ${acct.contactNumber ? '📱 '+acct.contactNumber+' · ' : ''}creada ${acct.createdAt ? timeAgo(acct.createdAt) : '—'} · activo ${acct.lastActive ? timeAgo(acct.lastActive) : '—'}</div>
         </div>
       </div>
       <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;" class="admin-actions-slot"></div>`;
@@ -4118,6 +4351,52 @@ function adminWipeAllStatuses(){
     toast(`Estados borrados de ${count} cuenta(s)`);
   });
 }
+
+// Reinicio total de la comunidad: borra TODAS las cuentas, chats y grupos,
+// excepto las 3 cuentas protegidas (charla, wezap, santiago), que se
+// recrean desde cero con sus números fijos. Acción extremadamente
+// destructiva e irreversible — por eso pide escribir una frase exacta.
+const PROTECTED_USERNAMES = ['charla','wezap','santiago'];
+function adminResetCommunity(){
+  openPromptModal(
+    '⚠️ Reiniciar comunidad desde cero',
+    'Esto BORRARÁ PERMANENTEMENTE todas las cuentas, chats y grupos, excepto charla, wezap y santiago. No se puede deshacer. Escribe exactamente BORRAR TODO para confirmar.',
+    'Escribe: BORRAR TODO',
+    'BORRAR TODO',
+    async (val)=>{
+      if((val||'').trim().toUpperCase() !== 'BORRAR TODO'){
+        toast('Texto de confirmación incorrecto. No se borró nada.');
+        return;
+      }
+      toast('Reiniciando comunidad… esto puede tardar un momento.');
+      try{
+        const acctKeys = await dbList('charla_acct_', true);
+        for(const k of acctKeys){
+          const uname = k.slice('charla_acct_'.length);
+          if(PROTECTED_USERNAMES.includes(uname)) continue;
+          await dbDelete(k, true);
+        }
+        const convKeys = await dbList('charla_conv_', true);
+        for(const k of convKeys) await dbDelete(k, true);
+        const groupKeys = await dbList('charla_group_', true); // incluye charla_group_conv_
+        for(const k of groupKeys) await dbDelete(k, true);
+        const numKeys = await dbList('charla_numidx_', true);
+        for(const k of numKeys) await dbDelete(k, true);
+
+        // Recrear las 3 cuentas protegidas desde cero, con sus números fijos
+        for(const uname of PROTECTED_USERNAMES){
+          await ensureSeedAccount(uname);
+        }
+        toast('✅ Comunidad reiniciada. Solo quedan charla, wezap y santiago.');
+        loadAdminPanel();
+      }catch(e){
+        console.error('Error al reiniciar comunidad:', e);
+        toast('Ocurrió un error durante el reinicio: '+describeError(e));
+      }
+    }
+  );
+}
+
 function adminActionBtn(label, onClick, danger){
   const btn = document.createElement('button');
   btn.textContent = label;
