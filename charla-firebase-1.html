@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Charla">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     /* ---- Identidad de marca: dorado cálido y refinado (con respaldo de variables) ---- */
@@ -24,8 +24,8 @@
     --yellow-darker:#7A5708;
     --yellow-light:#F6E2B6;
     --yellow-pale:#FBF3E1;
-    --white:#FFFFFF;
-    --bg:#F6F3EC;
+    --white:#FFC94A;
+    --bg:#FFC94A;
     --text:#221E17;
     --text-soft:#7C7263;
     --gray-bubble:#EFEAE0;
@@ -44,8 +44,8 @@
     --shadow-md: 0 8px 24px rgba(34,30,23,0.12);
     --shadow-lg: 0 16px 44px rgba(34,30,23,0.20);
     --shadow-gold: 0 8px 22px rgba(176,126,18,0.28);
-    --font-display:'Source Serif 4', Georgia, serif;
-    --font-body:'Plus Jakarta Sans', Roboto, "Segoe UI", -apple-system, sans-serif;
+    --font-display:'Poppins', 'Segoe UI', sans-serif;
+    --font-body:'Inter', Roboto, "Segoe UI", -apple-system, sans-serif;
   }
   body.dark{
     --yellow:#E8B23D;
@@ -77,19 +77,19 @@
   body.dark .topbar, body.dark .tabs, body.dark .chat-header{ color:#1A1404; }
 
   /* ---- Temas de color alternativos (se combinan con modo claro u oscuro) ---- */
-  body.theme-green{ --yellow:#2E9E5B; --yellow-dark:#22813F; --yellow-darker:#176C36; --yellow-light:#D2F0DD; --yellow-pale:#EBFAF1; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#46BE7C 0%,#2E9E5B 55%,#1F7E45 100%); --shadow-gold:0 8px 22px rgba(34,129,63,0.26); }
+  body.theme-green{ --yellow:#2E9E5B; --yellow-dark:#22813F; --yellow-darker:#176C36; --yellow-light:#D2F0DD; --yellow-pale:#EBFAF1; --white:#4FCB87; --bg:#4FCB87; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#46BE7C 0%,#2E9E5B 55%,#1F7E45 100%); --shadow-gold:0 8px 22px rgba(34,129,63,0.26); }
   body.theme-green.dark{ --yellow:#4FCB87; --yellow-dark:#36A567; --yellow-darker:#9CEFC0; --yellow-light:#173726; --yellow-pale:#0E2419; --brand-grad:linear-gradient(135deg,#65DA9A 0%,#4FCB87 55%,#2E9E5B 100%); }
-  body.theme-blue{ --yellow:#2972C4; --yellow-dark:#205AA0; --yellow-darker:#163F73; --yellow-light:#D6E6FA; --yellow-pale:#EEF5FD; --brand-grad:linear-gradient(135deg,#4D93DE 0%,#2972C4 55%,#1B569E 100%); --shadow-gold:0 8px 22px rgba(32,90,160,0.26); }
+  body.theme-blue{ --yellow:#2972C4; --yellow-dark:#205AA0; --yellow-darker:#163F73; --yellow-light:#D6E6FA; --yellow-pale:#EEF5FD; --white:#5F9EE8; --bg:#5F9EE8; --brand-grad:linear-gradient(135deg,#4D93DE 0%,#2972C4 55%,#1B569E 100%); --shadow-gold:0 8px 22px rgba(32,90,160,0.26); }
   body.theme-blue.dark{ --yellow:#5F9EE8; --yellow-dark:#3F7FCB; --yellow-darker:#AECFF5; --yellow-light:#142A40; --yellow-pale:#0C1B28; --brand-grad:linear-gradient(135deg,#7AB4F2 0%,#5F9EE8 55%,#3F7FCB 100%); }
-  body.theme-purple{ --yellow:#7E4FC9; --yellow-dark:#653CA6; --yellow-darker:#492A7C; --yellow-light:#E6DAF7; --yellow-pale:#F4EFFC; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#9B72DE 0%,#7E4FC9 55%,#623BA3 100%); --shadow-gold:0 8px 22px rgba(101,60,166,0.26); }
+  body.theme-purple{ --yellow:#7E4FC9; --yellow-dark:#653CA6; --yellow-darker:#492A7C; --yellow-light:#E6DAF7; --yellow-pale:#F4EFFC; --white:#B596EE; --bg:#B596EE; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#9B72DE 0%,#7E4FC9 55%,#623BA3 100%); --shadow-gold:0 8px 22px rgba(101,60,166,0.26); }
   body.theme-purple.dark{ --yellow:#B596EE; --yellow-dark:#9871DD; --yellow-darker:#DCC9FA; --yellow-light:#241936; --yellow-pale:#170F24; --brand-grad:linear-gradient(135deg,#C6ACF4 0%,#B596EE 55%,#9871DD 100%); }
-  body.theme-pink{ --yellow:#D94F8C; --yellow-dark:#B53A71; --yellow-darker:#852751; --yellow-light:#F8DCE9; --yellow-pale:#FDF0F6; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#EC76AB 0%,#D94F8C 55%,#B53A71 100%); --shadow-gold:0 8px 22px rgba(181,58,113,0.26); }
+  body.theme-pink{ --yellow:#D94F8C; --yellow-dark:#B53A71; --yellow-darker:#852751; --yellow-light:#F8DCE9; --yellow-pale:#FDF0F6; --white:#F18FB8; --bg:#F18FB8; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#EC76AB 0%,#D94F8C 55%,#B53A71 100%); --shadow-gold:0 8px 22px rgba(181,58,113,0.26); }
   body.theme-pink.dark{ --yellow:#F18FB8; --yellow-dark:#E06C9D; --yellow-darker:#FBD3E5; --yellow-light:#3A1A28; --yellow-pale:#26101A; --brand-grad:linear-gradient(135deg,#F6A8C8 0%,#F18FB8 55%,#E06C9D 100%); }
-  body.theme-red{ --yellow:#D9472E; --yellow-dark:#B5371F; --yellow-darker:#852816; --yellow-light:#F8DAD3; --yellow-pale:#FDEFEA; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#E96C50 0%,#D9472E 55%,#B5371F 100%); --shadow-gold:0 8px 22px rgba(181,55,31,0.26); }
+  body.theme-red{ --yellow:#D9472E; --yellow-dark:#B5371F; --yellow-darker:#852816; --yellow-light:#F8DAD3; --yellow-pale:#FDEFEA; --white:#F18A6F; --bg:#F18A6F; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#E96C50 0%,#D9472E 55%,#B5371F 100%); --shadow-gold:0 8px 22px rgba(181,55,31,0.26); }
   body.theme-red.dark{ --yellow:#F18A6F; --yellow-dark:#E06A4B; --yellow-darker:#FBCFC1; --yellow-light:#3A1D14; --yellow-pale:#26120C; --brand-grad:linear-gradient(135deg,#F6A48E 0%,#F18A6F 55%,#E06A4B 100%); }
-  body.theme-teal{ --yellow:#1F9C92; --yellow-dark:#187E76; --yellow-darker:#125F59; --yellow-light:#CFEFEC; --yellow-pale:#E9F9F7; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#3FBCB1 0%,#1F9C92 55%,#157A72 100%); --shadow-gold:0 8px 22px rgba(24,126,118,0.26); }
+  body.theme-teal{ --yellow:#1F9C92; --yellow-dark:#187E76; --yellow-darker:#125F59; --yellow-light:#CFEFEC; --yellow-pale:#E9F9F7; --white:#4FD4C8; --bg:#4FD4C8; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#3FBCB1 0%,#1F9C92 55%,#157A72 100%); --shadow-gold:0 8px 22px rgba(24,126,118,0.26); }
   body.theme-teal.dark{ --yellow:#4FD4C8; --yellow-dark:#34B2A6; --yellow-darker:#A8EFE7; --yellow-light:#103330; --yellow-pale:#0A211F; --brand-grad:linear-gradient(135deg,#6FE0D5 0%,#4FD4C8 55%,#34B2A6 100%); }
-  body.theme-orange{ --yellow:#E0792B; --yellow-dark:#BD611C; --yellow-darker:#8C4713; --yellow-light:#FBE3CC; --yellow-pale:#FEF3E8; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#F09650 0%,#E0792B 55%,#BD611C 100%); --shadow-gold:0 8px 22px rgba(189,97,28,0.26); }
+  body.theme-orange{ --yellow:#E0792B; --yellow-dark:#BD611C; --yellow-darker:#8C4713; --yellow-light:#FBE3CC; --yellow-pale:#FEF3E8; --white:#F4AB6E; --bg:#F4AB6E; --blue-tick:#2B7FD1; --brand-grad:linear-gradient(135deg,#F09650 0%,#E0792B 55%,#BD611C 100%); --shadow-gold:0 8px 22px rgba(189,97,28,0.26); }
   body.theme-orange.dark{ --yellow:#F4AB6E; --yellow-dark:#E68F49; --yellow-darker:#FBDBB9; --yellow-light:#3A270F; --yellow-pale:#26190A; --brand-grad:linear-gradient(135deg,#F8C091 0%,#F4AB6E 55%,#E68F49 100%); }
 
   /* ---- Fondos del chat (personalización del color de fondo, ya no solo blanco/beige) ---- */
@@ -202,6 +202,7 @@
   .bottom-nav{ display:flex; background:var(--white); border-top:1px solid var(--gray-border); padding-bottom:env(safe-area-inset-bottom); flex-shrink:0; box-shadow:0 -2px 10px rgba(0,0,0,0.04); }
   .nav-item{ flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:9px 0 8px; font-size:10.5px; color:var(--text-soft); position:relative; font-weight:600; transition:color .15s; }
   .nav-item .nav-icon{ font-size:19px; transition:transform .15s; }
+  .nav-item .nav-icon svg{ width:22px; height:22px; }
   .nav-item.active{ color:var(--yellow-darker); font-weight:800; }
   .nav-item.active .nav-icon{ transform:translateY(-1px); }
 
@@ -214,6 +215,7 @@
   .chat-row{ display:flex; align-items:center; gap:13px; padding:12px 16px; border-bottom:1px solid var(--gray-border); position:relative; transition:background .12s; background:var(--white); }
   .chat-row:active{ background:var(--gray-bubble); }
   .avatar{ width:50px; height:50px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:17px; position:relative; background:var(--brand-grad-soft); box-shadow:0 2px 6px rgba(0,0,0,0.14), inset 0 0 0 2px rgba(255,255,255,0.18); }
+  .avatar svg{ width:55%; height:55%; }
   .avatar img{ width:100%; height:100%; border-radius:50%; object-fit:cover; }
   .avatar .online-dot{ position:absolute; bottom:-1px; right:-1px; width:12px; height:12px; border-radius:50%; background:var(--green-online); border:2.5px solid var(--white); box-shadow:0 0 0 1px rgba(31,163,99,0.25); }
   .chat-info{ flex:1; min-width:0; }
@@ -284,6 +286,7 @@
   .input-wrap input{ flex:1; border:none; outline:none; font-size:14.5px; background:transparent; min-width:0; color:var(--text); }
   .input-wrap .icon-btn{ font-size:18px; padding:4px; flex-shrink:0; }
   .round-btn{ width:44px; height:44px; border-radius:50%; background:var(--brand-grad); color:#241A06; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; box-shadow:var(--shadow-gold); transition:transform .12s; }
+  .round-btn svg{ width:19px; height:19px; }
   .round-btn:active{ transform:scale(.93); }
 
   .attach-menu{ position:absolute; bottom:64px; left:9px; background:var(--white); border-radius:16px; box-shadow:var(--shadow-lg); padding:12px; display:grid; grid-template-columns:repeat(4,1fr); gap:11px; z-index:30; border:1px solid var(--gray-border); }
@@ -488,7 +491,7 @@
   <div class="screen hidden" id="screen-app" style="flex-direction:column;">
     <div class="topbar">
       <h1 id="main-title">Charla</h1>
-      <button class="icon-btn" onclick="toggleChatSearch()">🔍</button>
+      <button class="icon-btn" onclick="toggleChatSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
       <button class="icon-btn" onclick="openTab('settings')">⚙️</button>
     </div>
     <div class="tabs">
@@ -574,18 +577,18 @@
           <div class="bg-swatch" data-bg="dots" style="background:#F6F3EC; background-image:radial-gradient(rgba(34,30,23,0.18) 1.6px, transparent 1.6px); background-size:8px 8px;" onclick="setChatBg('dots')" title="Puntos"></div>
         </div>
       </div>
-      <div class="settings-item"><div class="si-ic">🔔</div><div class="si-text"><div class="t1">Notificaciones</div><div class="t2">Tonos de mensajes y llamadas</div></div></div>
+      <div class="settings-item"><div class="si-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><div class="si-text"><div class="t1">Notificaciones</div><div class="t2">Tonos de mensajes y llamadas</div></div></div>
       <div class="settings-item" style="cursor:pointer;" onclick="openPrivacySettings()"><div class="si-ic">🔒</div><div class="si-text"><div class="t1">Privacidad</div><div class="t2">Cifrado de extremo a extremo · Toca para configurar</div></div><span style="color:var(--text-soft);font-size:18px;">›</span></div>
       <div class="logout-btn" onclick="doLogout()">Cerrar sesión</div>
     </div>
 
-    <div class="fab hidden" id="fab-chats" onclick="openNewChatOrGroup()">✏️</div>
+    <div class="fab hidden" id="fab-chats" onclick="openNewChatOrGroup()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
 
     <div class="bottom-nav">
-      <div class="nav-item active" id="nav-chats" onclick="openTab('chats')"><div class="nav-icon">💬</div>Chats</div>
-      <div class="nav-item" id="nav-status" onclick="openTab('status')"><div class="nav-icon">⭕</div>Estados</div>
-      <div class="nav-item" id="nav-calls" onclick="openTab('calls')"><div class="nav-icon">📞</div>Llamadas</div>
-      <div class="nav-item" id="nav-settings" onclick="openTab('settings')"><div class="nav-icon">⚙️</div>Ajustes</div>
+      <div class="nav-item active" id="nav-chats" onclick="openTab('chats')"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>Chats</div>
+      <div class="nav-item" id="nav-status" onclick="openTab('status')"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/></svg></div>Estados</div>
+      <div class="nav-item" id="nav-calls" onclick="openTab('calls')"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>Llamadas</div>
+      <div class="nav-item" id="nav-settings" onclick="openTab('settings')"><div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>Ajustes</div>
     </div>
   </div>
 
@@ -600,7 +603,7 @@
       </div>
       <button class="icon-btn" id="chat-video-btn" onclick="callOverlay('video')">📹</button>
       <button class="icon-btn" id="chat-voice-btn" onclick="callOverlay('voice')">📞</button>
-      <button class="icon-btn" onclick="openChatSearch()">🔍</button>
+      <button class="icon-btn" onclick="openChatSearch()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
       <button class="icon-btn" onclick="openChatMenu()">⋮</button>
     </div>
     <div class="chat-search-bar hidden" id="chat-search-bar">
@@ -620,12 +623,12 @@
     </div>
     <div class="input-bar" id="chat-input-bar">
       <button class="icon-btn hidden" id="quick-reply-btn" onclick="openQuickReplies()">💬</button>
-      <button class="icon-btn" id="attach-toggle" onclick="toggleAttach()">📎</button>
+      <button class="icon-btn" id="attach-toggle" onclick="toggleAttach()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
       <div class="input-wrap">
         <input id="msg-input" type="text" placeholder="Mensaje" oninput="onTyping()" onkeydown="if(event.key==='Enter')sendMessage()">
-        <button class="icon-btn" onclick="document.getElementById('hidden-cam').click()">📷</button>
+        <button class="icon-btn" onclick="document.getElementById('hidden-cam').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
       </div>
-      <button class="round-btn" id="send-btn" onmousedown="startMic(event)" ontouchstart="startMic(event)" onmouseup="endMic(event)" ontouchend="endMic(event)" onclick="sendOrMic()">🎤</button>
+      <button class="round-btn" id="send-btn" onmousedown="startMic(event)" ontouchstart="startMic(event)" onmouseup="endMic(event)" ontouchend="endMic(event)" onclick="sendOrMic()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
     </div>
     <input type="file" id="hidden-file" accept="image/*,application/pdf" onchange="onFileChosen(event)">
     <input type="file" id="hidden-cam" accept="image/*" onchange="onFileChosen(event)">
@@ -959,6 +962,27 @@
 </div>
 
 <script>
+/* ============================================================
+   ÍCONOS: set vectorial propio (SVG, estilo outline moderno)
+   Reemplaza los emojis de la interfaz principal por íconos reales,
+   consistentes en todos los dispositivos (los emojis se ven distinto
+   según el teléfono/SO; estos siempre se ven igual e igual de nítidos).
+   ============================================================ */
+const ICONS = {
+  chat:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+  status:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/></svg>',
+  phone:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  gear:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  search:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>',
+  camera:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+  paperclip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>',
+  mic:      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>',
+  send:     '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>',
+  edit:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+  users:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  bell:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+};
+
 /* ============================================================
    CONFIGURACIÓN DE FIREBASE
    ─────────────────────────────────────────────────────────────
@@ -1804,7 +1828,7 @@ function renderChatRows(rows){
         tickHtml = r.last.status==='read' ? '<span class="tick read">✓✓</span>' : (r.last.status==='delivered' ? '<span class="tick sent">✓✓</span>' : '<span class="tick sent">✓</span>');
       }
     }
-    const avatarInner = r.isGroup ? '👥' : (r.otherAcct && r.otherAcct.avatar ? '<img src="'+r.otherAcct.avatar+'">' : initialsOf(displayName));
+    const avatarInner = r.isGroup ? ICONS.users : (r.otherAcct && r.otherAcct.avatar ? '<img src="'+r.otherAcct.avatar+'">' : initialsOf(displayName));
     const groupBadge = r.isGroup ? '<span class="group-badge" style="font-size:9px;">GRUPO</span>' : '';
     const devBadge = (!r.isGroup && r.otherAcct && r.otherAcct.isAdmin) ? '<span class="dev-badge" style="font-size:9px;">DEV</span>' : '';
     const verifiedBadge = (!r.isGroup && r.otherAcct && r.otherAcct.isVerified) ? '<svg class="verified-svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:3px;" title="Verificado"><circle cx="10" cy="10" r="10" fill="#1D9BF0"/><path d="M5.5 10.5L8.5 13.5L14.5 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : '';
@@ -2083,7 +2107,7 @@ async function openGroupChatScreen(groupId, groupData){
   document.getElementById('chat-name').innerHTML = escapeHtml(group.name)+' <span class="group-badge">GRUPO</span>';
   const av = document.getElementById('chat-avatar');
   av.style.background = colorFor(groupId);
-  av.textContent = '👥';
+  av.innerHTML = ICONS.users;
   const memberCount = (group.members||[]).length;
   document.getElementById('chat-status').textContent = group.closed ? '🔒 Grupo cerrado · '+memberCount+' miembros' : memberCount+' miembros';
 
@@ -3128,7 +3152,7 @@ async function recordDailyMessageStat(){
 
 function onTyping(){
   const val = document.getElementById('msg-input').value;
-  document.getElementById('send-btn').textContent = val.trim().length>0 ? '➤' : '🎤';
+  document.getElementById('send-btn').innerHTML = val.trim().length>0 ? ICONS.send : ICONS.mic;
 }
 function sendOrMic(){
   const val = document.getElementById('msg-input').value.trim();
@@ -4023,7 +4047,7 @@ function renderAdminGroupList(){
     row.style.cssText = 'background:var(--white); border-bottom:1px solid #F4EFE1; padding:11px 14px;';
     row.innerHTML = `
       <div style="display:flex; align-items:center; gap:10px;">
-        <div class="avatar" style="width:36px;height:36px;font-size:15px;background:${colorFor(g.id)}">👥</div>
+        <div class="avatar" style="width:36px;height:36px;font-size:15px;background:${colorFor(g.id)}">${ICONS.users}</div>
         <div style="flex:1; min-width:0;">
           <div style="font-size:14px; font-weight:700;">${escapeHtml(g.name)}</div>
           <div style="font-size:12px; color:var(--text-soft);">creado por @${escapeHtml(g.creator)} · ${(g.members||[]).length} miembro(s) · ${g.createdAt ? timeAgo(g.createdAt) : '—'}</div>
