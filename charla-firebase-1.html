@@ -732,6 +732,13 @@
           <div style="font-size:20px; font-weight:700;" id="admin-stat-msgs">—</div>
           <div style="font-size:11px; color:var(--text-soft);">Mensajes enviados</div>
         </div>
+        <div style="flex:1; background:var(--white); border:1px solid var(--gray-border); border-radius:12px; padding:12px; text-align:center;">
+          <div style="font-size:20px; font-weight:700; color:#1F7A3D;" id="admin-stat-online">—</div>
+          <div style="font-size:11px; color:var(--text-soft);">🟢 En línea ahora</div>
+        </div>
+      </div>
+      <div style="padding:0 14px 10px;">
+        <div id="admin-online-list" style="font-size:12.5px; color:var(--text-soft);"></div>
       </div>
 
       <div class="status-section-title">📊 Analítica</div>
@@ -755,6 +762,10 @@
         <div style="display:flex; align-items:center; justify-content:space-between; background:var(--white); border:1px solid var(--gray-border); border-radius:10px; padding:10px 12px; margin-bottom:8px;">
           <div><b style="font-size:13.5px;">🎤 Notas de voz</b><div class="sub" style="margin:2px 0 0;">Activar o desactivar el envío de notas de voz para todos.</div></div>
           <button id="admin-feat-voice" class="modal-btn-cancel" onclick="adminToggleFeature('voiceNotes')">—</button>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--white); border:1px solid var(--gray-border); border-radius:10px; padding:10px 12px; margin-bottom:8px;">
+          <div><b style="font-size:13.5px;">🆕 Registro de nuevas cuentas</b><div class="sub" style="margin:2px 0 0;">Ciérralo temporalmente sin tocar el código (mantenimiento, control de crecimiento, etc.).</div></div>
+          <button id="admin-feat-registration" class="modal-btn-cancel" onclick="adminToggleFeature('registrationOpen')">—</button>
         </div>
         <div class="field"><label>Límite de tamaño de archivos/imágenes (MB)</label><input id="admin-max-file-mb" type="number" min="1" max="100"></div>
         <button class="btn-primary" style="margin-bottom:10px;" onclick="adminSaveMaxFileMb()">Guardar límite</button>
@@ -1373,7 +1384,7 @@ async function init(){
   if(lastUser){
     try{
       const acct = await loadAccount(lastUser);
-      if(acct && !acct.isSuspended){ await enterApp(acct); return; }
+      if(acct && !(await isSuspendedActive(acct))) { await enterApp(acct); return; }
     }catch(e){
       // Si Firebase falla en el auto-login, ir a login en vez de pantalla en blanco
       console.warn('Auto-login Firebase error, falling back to login screen:', e);
@@ -1383,6 +1394,20 @@ async function init(){
 }
 
 /* ============== REGISTRO / LOGIN ============== */
+// Comprueba si una cuenta está realmente suspendida en este momento.
+// Si la suspensión era temporal (suspendedUntil) y ya venció, la reactiva
+// automáticamente y persiste el cambio, sin intervención del administrador.
+async function isSuspendedActive(acct){
+  if(!acct || !acct.isSuspended) return false;
+  if(acct.suspendedUntil && acct.suspendedUntil <= Date.now()){
+    acct.isSuspended = false;
+    acct.suspendedUntil = 0;
+    await saveAccount(acct);
+    delete contactCache[acct.username];
+    return false;
+  }
+  return true;
+}
 // Extrae mensaje + ubicación (archivo:línea) de un error para poder
 // diagnosticar problemas directamente desde el mensaje mostrado en pantalla,
 // sin necesitar abrir la consola del navegador (útil al probar desde el APK).
@@ -1412,6 +1437,11 @@ async function doRegister(){
 
   btn.disabled = true;
   try{
+    const features = await dbGet('charla_features', true);
+    if(features && features.registrationOpen === false){
+      err.textContent = 'El registro de nuevas cuentas está cerrado temporalmente. Vuelve a intentarlo más tarde.';
+      return;
+    }
     if(ADMIN_USERNAMES.includes(user)){ err.textContent = 'Ese nombre de usuario está reservado.'; btn.disabled=false; return; }
     const existing = await loadAccount(user);
     if(existing){ err.textContent = 'Ese nombre de usuario ya está en uso.'; btn.disabled=false; return; }
@@ -1459,8 +1489,9 @@ async function doLogin(){
     await ensureSeedAccount(user);
     const acct = await loadAccount(user);
     if(!acct || acct.password !== pass){ err.textContent = 'Usuario o contraseña incorrectos.'; return; }
-    if(acct.isSuspended){
-      err.innerHTML = 'Esta cuenta ha sido suspendida por un administrador. <a onclick="CURRENT_USER=acct; submitAppeal()" style="color:var(--yellow-darker);cursor:pointer;font-weight:700;">Apelar</a>';
+    if(await isSuspendedActive(acct)){
+      const untilTxt = acct.suspendedUntil ? ' (hasta '+new Date(acct.suspendedUntil).toLocaleString('es-ES')+')' : '';
+      err.innerHTML = 'Esta cuenta ha sido suspendida por un administrador'+untilTxt+'. <a onclick="CURRENT_USER=acct; submitAppeal()" style="color:var(--yellow-darker);cursor:pointer;font-weight:700;">Apelar</a>';
       CURRENT_USER = acct; // temp so submitAppeal works
       return;
     }
@@ -1570,7 +1601,7 @@ function startHeartbeat(){
       await doLogout();
       return;
     }
-    if(fresh && fresh.isSuspended){
+    if(fresh && await isSuspendedActive(fresh)){
       toast('Tu cuenta fue suspendida.');
       await doLogout();
       return;
@@ -1585,10 +1616,15 @@ function startHeartbeat(){
 
 function renderProfileAvatar(){
   const initial = initialsOf(CURRENT_USER.name);
-  const pa = document.getElementById('profile-avatar'), pi = document.getElementById('profile-initial');
-  pi.textContent = initial;
+  const pa = document.getElementById('profile-avatar');
   pa.style.background = colorFor(CURRENT_USER.username);
-  if(CURRENT_USER.avatar) pa.innerHTML = '<img src="'+CURRENT_USER.avatar+'">';
+  // Se reconstruye todo el contenido del avatar en una sola operación
+  // (en vez de tocar un <span> hijo por separado) para que nunca falle,
+  // incluso si una llamada anterior en esta misma sesión ya reemplazó
+  // el contenido por una <img>.
+  pa.innerHTML = CURRENT_USER.avatar
+    ? '<img src="'+CURRENT_USER.avatar+'">'
+    : '<span id="profile-initial">'+escapeHtml(initial)+'</span>';
   // Nombre + badges
   const nameEl = document.getElementById('profile-name');
   let badgeHtml = '';
@@ -3722,6 +3758,17 @@ async function loadAdminPanel(){
   _adminAccountsCache = accounts;
   renderAdminUserList();
 
+  // Usuarios en línea ahora (actividad en los últimos 5 minutos)
+  const ONLINE_WINDOW_MS = 5*60*1000;
+  const onlineNow = accounts.filter(a => a.lastActive && (Date.now()-a.lastActive) <= ONLINE_WINDOW_MS);
+  document.getElementById('admin-stat-online').textContent = onlineNow.length;
+  const onlineBox = document.getElementById('admin-online-list');
+  if(onlineBox){
+    onlineBox.innerHTML = onlineNow.length
+      ? 'Ahora: ' + onlineNow.sort((a,b)=>(b.lastActive||0)-(a.lastActive||0)).map(a=>'@'+escapeHtml(a.username)).join(', ')
+      : 'Nadie conectado en los últimos 5 minutos.';
+  }
+
   const groups = [];
   for(const k of groupKeys){
     if(k.startsWith('charla_group_conv_')) continue;
@@ -3923,7 +3970,7 @@ function renderAdminUserList(){
     row.style.cssText = 'background:var(--white); border-bottom:1px solid #F4EFE1; padding:11px 14px;';
     const badges = [];
     if(acct.isAdmin) badges.push('<span style="background:var(--yellow-light); color:#5A4400; font-size:10px; font-weight:700; padding:2px 7px; border-radius:8px;">'+(acct.username==='charla'?'ADMIN':'DEV')+'</span>');
-    if(acct.isSuspended) badges.push('<span style="background:#FCE9E9; color:var(--danger); font-size:10px; font-weight:700; padding:2px 7px; border-radius:8px;">SUSPENDIDO</span>');
+    if(acct.isSuspended) badges.push('<span style="background:#FCE9E9; color:var(--danger); font-size:10px; font-weight:700; padding:2px 7px; border-radius:8px;">SUSPENDIDO'+(acct.suspendedUntil ? ' hasta '+new Date(acct.suspendedUntil).toLocaleDateString('es-ES') : '')+'</span>');
     if(acct.mutedUntil && acct.mutedUntil > Date.now()) badges.push('<span style="background:#FCE9E9; color:var(--danger); font-size:10px; font-weight:700; padding:2px 7px; border-radius:8px;">SILENCIADO</span>');
     if(acct.strikes) badges.push('<span style="background:#FFF1DB; color:#8A5A00; font-size:10px; font-weight:700; padding:2px 7px; border-radius:8px;">'+acct.strikes+' ADVERTENCIA(S)</span>');
     if(acct.isVerified) badges.push('<span style="background:#E8F6EC; color:#1F7A3D; font-size:10px; font-weight:700; padding:2px 7px; border-radius:8px;">VERIFICADO</span>');
@@ -4069,11 +4116,33 @@ async function adminResetPassword(username){
 async function adminToggleSuspend(username){
   const acct = await dbGet(acctKey(username), true);
   if(!acct) return;
-  acct.isSuspended = !acct.isSuspended;
-  await dbSet(acctKey(username), acct, true);
-  delete contactCache[username];
-  toast(acct.isSuspended ? 'Cuenta @'+username+' suspendida' : 'Cuenta @'+username+' reactivada');
-  loadAdminPanel();
+  if(acct.isSuspended){
+    // Reactivar de inmediato
+    acct.isSuspended = false;
+    acct.suspendedUntil = 0;
+    await dbSet(acctKey(username), acct, true);
+    delete contactCache[username];
+    toast('Cuenta @'+username+' reactivada');
+    loadAdminPanel();
+    return;
+  }
+  openPromptModal(
+    'Suspender a @'+username,
+    'Deja en blanco para suspender indefinidamente, o escribe horas para que se reactive sola (ej: 24).',
+    'Duración (horas, opcional)',
+    'Ej: 24',
+    async (hoursRaw)=>{
+      const acct2 = await dbGet(acctKey(username), true);
+      if(!acct2) return;
+      acct2.isSuspended = true;
+      const hours = parseFloat(hoursRaw);
+      acct2.suspendedUntil = (hoursRaw && !isNaN(hours) && hours>0) ? Date.now() + hours*3600000 : 0;
+      await dbSet(acctKey(username), acct2, true);
+      delete contactCache[username];
+      toast('Cuenta @'+username+' suspendida' + (acct2.suspendedUntil ? ' por '+hours+'h' : ' indefinidamente'));
+      loadAdminPanel();
+    }
+  );
 }
 /* ---- Advertencias (strikes) y silencio temporal: control de moderación de contenido ---- */
 async function adminWarnUser(username){
@@ -4349,6 +4418,8 @@ async function loadAdminLiveControls(){
   const features = (await dbGet('charla_features', true)) || { voiceNotes:true };
   const vbtn = document.getElementById('admin-feat-voice');
   vbtn.textContent = (features.voiceNotes !== false) ? '🟢 Activadas' : '🔴 Desactivadas';
+  const rbtn = document.getElementById('admin-feat-registration');
+  rbtn.textContent = (features.registrationOpen !== false) ? '🟢 Abierto' : '🔴 Cerrado';
 
   const maxMb = (await dbGet('charla_max_file_mb', true)) || 15;
   document.getElementById('admin-max-file-mb').value = maxMb;
@@ -4370,7 +4441,9 @@ async function adminToggleFeature(name){
   const features = (await dbGet('charla_features', true)) || {};
   features[name] = features[name] === false ? true : false;
   await dbSet('charla_features', features, true);
-  toast('Función "'+name+'" '+(features[name]===false?'desactivada':'activada'));
+  const labels = { voiceNotes:'Notas de voz', registrationOpen:'Registro de nuevas cuentas' };
+  const label = labels[name] || name;
+  toast(label+' '+(features[name]===false?'desactivada(o)':'activada(o)'));
   loadAdminLiveControls();
 }
 async function adminSaveMaxFileMb(){
