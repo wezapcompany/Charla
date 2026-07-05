@@ -1398,17 +1398,24 @@ async function doRegister(){
   if(pass !== pass2){ err.textContent = 'Las contraseñas no coinciden.'; return; }
 
   btn.disabled = true;
-  if(ADMIN_USERNAMES.includes(user)){ err.textContent = 'Ese nombre de usuario está reservado.'; btn.disabled=false; return; }
-  const existing = await loadAccount(user);
-  if(existing){ err.textContent = 'Ese nombre de usuario ya está en uso.'; btn.disabled=false; return; }
+  try{
+    if(ADMIN_USERNAMES.includes(user)){ err.textContent = 'Ese nombre de usuario está reservado.'; btn.disabled=false; return; }
+    const existing = await loadAccount(user);
+    if(existing){ err.textContent = 'Ese nombre de usuario ya está en uso.'; btn.disabled=false; return; }
 
-  const acct = { username:user, password:pass, name:name, avatar:null, bio:'', chats:{}, blocked:[], statuses:[], callLog:[], lastActive:Date.now(), createdAt:Date.now(), isAdmin:false, isSuspended:false, isVerified:false, isModerator:false, msgCount:0, deviceLog:[], forceLogoutAt:0 };
-  applyAdminFlag(acct);
-  await saveAccount(acct);
-  btn.disabled = false;
-  toast(acct.isAdmin ? 'Cuenta de administrador creada, ¡bienvenido!' : 'Cuenta creada, ¡bienvenido!');
-  await enterApp(acct);
+    const acct = { username:user, password:pass, name:name, avatar:null, bio:'', chats:{}, blocked:[], statuses:[], callLog:[], lastActive:Date.now(), createdAt:Date.now(), isAdmin:false, isSuspended:false, isVerified:false, isModerator:false, msgCount:0, deviceLog:[], forceLogoutAt:0 };
+    applyAdminFlag(acct);
+    await saveAccount(acct);
+    toast(acct.isAdmin ? 'Cuenta de administrador creada, ¡bienvenido!' : 'Cuenta creada, ¡bienvenido!');
+    await enterApp(acct);
+  }catch(e){
+    console.error('Error en doRegister:', e);
+    err.textContent = 'No se pudo completar el registro (' + (e && e.message ? e.message : 'error de conexión') + '). Intenta de nuevo.';
+  }finally{
+    btn.disabled = false;
+  }
 }
+
 
 // Cuentas del creador que deben existir siempre con estas credenciales exactas.
 // Si por algún motivo no existen en la base de datos (primera vez, datos
@@ -1435,25 +1442,31 @@ async function doLogin(){
   err.textContent = '';
   if(!user || !pass){ err.textContent = 'Ingresa tu usuario y contraseña.'; return; }
   btn.disabled = true;
-  await ensureSeedAccount(user);
-  const acct = await loadAccount(user);
-  btn.disabled = false;
-  if(!acct || acct.password !== pass){ err.textContent = 'Usuario o contraseña incorrectos.'; return; }
-  if(acct.isSuspended){
-    err.innerHTML = 'Esta cuenta ha sido suspendida por un administrador. <a onclick="CURRENT_USER=acct; submitAppeal()" style="color:var(--yellow-darker);cursor:pointer;font-weight:700;">Apelar</a>';
-    CURRENT_USER = acct; // temp so submitAppeal works
-    return;
-  }
-  applyAdminFlag(acct);
-  if(!acct.isAdmin){
-    const maint = await dbGet('charla_maintenance', true);
-    if(maint && maint.enabled){
-      err.textContent = maint.message || 'La app está en mantenimiento. Vuelve a intentarlo más tarde.';
+  try{
+    await ensureSeedAccount(user);
+    const acct = await loadAccount(user);
+    if(!acct || acct.password !== pass){ err.textContent = 'Usuario o contraseña incorrectos.'; return; }
+    if(acct.isSuspended){
+      err.innerHTML = 'Esta cuenta ha sido suspendida por un administrador. <a onclick="CURRENT_USER=acct; submitAppeal()" style="color:var(--yellow-darker);cursor:pointer;font-weight:700;">Apelar</a>';
+      CURRENT_USER = acct; // temp so submitAppeal works
       return;
     }
+    applyAdminFlag(acct);
+    if(!acct.isAdmin){
+      const maint = await dbGet('charla_maintenance', true);
+      if(maint && maint.enabled){
+        err.textContent = maint.message || 'La app está en mantenimiento. Vuelve a intentarlo más tarde.';
+        return;
+      }
+    }
+    if(acct.isAdmin) await saveAccount(acct);
+    await enterApp(acct);
+  }catch(e){
+    console.error('Error en doLogin:', e);
+    err.textContent = 'No se pudo iniciar sesión (' + (e && e.message ? e.message : 'error de conexión') + '). Intenta de nuevo.';
+  }finally{
+    btn.disabled = false;
   }
-  if(acct.isAdmin) await saveAccount(acct);
-  await enterApp(acct);
 }
 function logDeviceMeta(acct){
   try{
@@ -1495,10 +1508,13 @@ async function enterApp(acct){
   renderProfileAvatar();
   openTab('chats');
   showScreen('screen-app');
-  refreshChatList();
+  // Cada una de estas tareas de fondo se protege por separado: si una falla
+  // (por ejemplo, una conexión lenta o intermitente a Firebase), las demás
+  // igual se ejecutan y el usuario nunca ve interrumpida su entrada a la app.
+  refreshChatList().catch(e=>console.error('refreshChatList falló:', e));
   renderFolderBar();
-  refreshStatusTab();
-  refreshCallsList();
+  refreshStatusTab().catch(e=>console.error('refreshStatusTab falló:', e));
+  refreshCallsList().catch(e=>console.error('refreshCallsList falló:', e));
   startHeartbeat();
   // Activar notificaciones push
   setTimeout(initNotifications, 1500);
